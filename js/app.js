@@ -1,0 +1,150 @@
+
+var canvas;
+var context;
+
+MousePosition = {x: 0, y: 0};
+
+function Player(pos, radius, speed) {
+    this.pos = pos;
+    this.radius = radius || 20;
+    this.origin = this.radius;
+    this.speed = speed || 10;
+    this.rotation = 0;
+}
+
+Player.prototype.draw = function (context) {
+    context.save();
+    context.translate(this.pos[0], this.pos[1]);
+    context.rotate(this.rotation);
+    context.drawImage(resources.get('img/smile.png'), 0, 0,
+        this.radius * 2, this.radius * 2, -this.origin, -this.origin, 40, 40);
+    context.restore();
+};
+
+function Bullet(pos, radius, vector, velocity) {
+    this.pos = pos;
+    this.radius = radius;
+    this.vector = vector;
+    this.velocity = [this.vector[0] * velocity, this.vector[1] * velocity];
+}
+
+Bullet.prototype.draw = function (context) {
+    var x = this.pos[0] + this.radius;
+    var y = this.pos[1] + this.radius;
+    context.beginPath();
+    context.arc(x, y, this.radius, 0, 2 * Math.PI, false);
+    context.fillStyle = "red";
+    context.fill();
+    context.lineWidth = 2;
+    context.strokeStyle = "#993399";
+    context.stroke();
+};
+
+Bullet.prototype.update = function () {
+    this.pos[0] += this.velocity[0];
+    this.pos[1] += this.velocity[1];
+};
+
+var player = undefined;
+var lastFire = Date.now();
+var bullets = [];
+
+resources.load('img/smile.png');
+resources.onReady(start);
+
+function start() {
+    canvas = document.createElement("canvas");
+    context = canvas.getContext("2d")
+    canvas.width = 600;
+    canvas.height = 400;
+
+    document.body.appendChild(canvas);
+
+    player = new Player([0,0]);
+
+    mainLoop();
+}
+
+document.addEventListener('mousemove', function (event) {
+    var rect = canvas.getBoundingClientRect();
+    MousePosition.x = Math.round(event.pageX - rect.left);
+    MousePosition.y = Math.round(event.pageY - rect.top);
+});
+
+function mainLoop() {
+    context.fillStyle = "blue";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+
+    update();
+    draw();
+
+    requestAnimationFrame(mainLoop);
+}
+
+function update() {
+    handleInput();
+    checkCollision();
+    var opposite = MousePosition.y - player.pos[1];
+    var adjacent = MousePosition.x - player.pos[0];
+    player.rotation = Math.atan2(opposite, adjacent);
+    player.rotation += Math.atan2(1, 0);
+
+    for (var i = 0; i < bullets.length; i++) {
+        var bullet = bullets[i];
+        bullet.update();
+    }
+}
+
+function draw() {
+    player.draw(context);
+    for (var i = 0; i< bullets.length; i++) {
+        bullets[i].draw(context);
+    }
+}
+
+function handleInput() {
+    if (input.isDown('DOWN')) {
+        player.pos[1] += player.speed;
+    }
+
+    if (input.isDown('UP')) {
+        player.pos[1] -= player.speed;
+    }
+
+    if (input.isDown('LEFT')) {
+        player.pos[0] -= player.speed;
+    }
+
+    if (input.isDown('RIGHT')) {
+        player.pos[0] += player.speed;
+    }
+
+    if (input.isDown('SPACE') && Date.now() - lastFire > 100) {
+        lastFire = Date.now();
+        var x = player.pos[0] + player.radius;
+        var y = player.pos[1];
+        var vector = [MousePosition.x - x , MousePosition.y - y];
+        var distance = Math.sqrt(vector[0] * vector[0] + vector[1] * vector[1]);
+        var normalizedVector = [vector[0] / distance, vector[1] / distance];
+        var bullet = new Bullet([x, y], 5, normalizedVector, 20);
+        bullets.push(bullet);
+        console.log(bullets.length);
+    }
+}
+
+function checkCollision() {
+    if (player.pos[0] - player.radius < 0) {
+        player.pos[0] = player.radius;
+    } else if (player.pos[0] + player.radius >= canvas.width) {
+        player.pos[0] = canvas.width - player.radius;
+    }
+
+    if (player.pos[1] - player.radius < 0) {
+        player.pos[1] = player.radius;
+    } else if (player.pos[1] + player.radius > canvas.height) {
+        player.pos[1] = canvas.height - player.radius;
+    }
+
+
+}
