@@ -48,6 +48,7 @@ Bullet.prototype.update = function () {
 var player = undefined;
 var lastFire = Date.now();
 var bullets = [];
+var enemies = [];
 
 resources.load('img/smile.png');
 resources.onReady(start);
@@ -61,6 +62,13 @@ function start() {
     document.body.appendChild(canvas);
 
     player = new Player([0,0]);
+
+    enemies.push(new Player([200,200]));
+    enemies.push(new Player([240,240]));
+    enemies.push(new Player([300,240]));
+    enemies.push(new Player([400,140]));
+    enemies.push(new Player([120,140]));
+    enemies.push(new Player([100,50]));
 
     mainLoop();
 }
@@ -101,22 +109,26 @@ function draw() {
     for (var i = 0; i< bullets.length; i++) {
         bullets[i].draw(context);
     }
+
+    for (var i = 0; i < enemies.length; i++) {
+        enemies[i].draw(context);
+    }
 }
 
 function handleInput() {
-    if (input.isDown('DOWN')) {
+    if (input.isDown('DOWN') || input.isDown('s')) {
         player.pos[1] += player.speed;
     }
 
-    if (input.isDown('UP')) {
+    if (input.isDown('UP') || input.isDown('w')) {
         player.pos[1] -= player.speed;
     }
 
-    if (input.isDown('LEFT')) {
+    if (input.isDown('LEFT') || input.isDown('a')) {
         player.pos[0] -= player.speed;
     }
 
-    if (input.isDown('RIGHT')) {
+    if (input.isDown('RIGHT') || input.isDown('d')) {
         player.pos[0] += player.speed;
     }
 
@@ -127,9 +139,8 @@ function handleInput() {
         var vector = [MousePosition.x - x , MousePosition.y - y];
         var distance = Math.sqrt(vector[0] * vector[0] + vector[1] * vector[1]);
         var normalizedVector = [vector[0] / distance, vector[1] / distance];
-        var bullet = new Bullet([x, y], 5, normalizedVector, 20);
+        var bullet = new Bullet([x, y], 5, normalizedVector, 15);
         bullets.push(bullet);
-        console.log(bullets.length);
     }
 }
 
@@ -146,5 +157,55 @@ function checkCollision() {
         player.pos[1] = canvas.height - player.radius;
     }
 
+    for (var i = 0; i < bullets.length; i++) {
+        if (checkWorldOut(bullets[i].pos, bullets[i].radius)) {
+            bullets.splice(i, 1);
+            i++;
+        }
+    }
 
+    for (var i = 0; i < enemies.length; i++) {
+        var pos = enemies[i].pos;
+        var radius = enemies[i].radius;
+
+        for (var j = 0; j < bullets.length; j++) {
+            var bpos = bullets[j].pos;
+            var bradius = bullets[j].radius;
+
+            if (checkRoundCollides(pos, radius, bpos, bradius)) {
+                enemies.splice(i, 1);
+                bullets.splice(j, 1);
+                i++;
+                break;
+            }
+        }
+    }
+
+}
+
+function checkRoundCollides(pos1, radius1, pos2, radius2) {
+    var dist = [Math.abs(pos1[0] - pos2[0]), Math.abs(pos1[1] - pos2[1])];
+    var length = Math.sqrt(dist[0] * dist[0] + dist[1] * dist[1]);
+
+    if (length < radius1 + radius2) {
+        return true;
+    }
+
+    return false;
+}
+
+function checkWorldOut(pos, radius) {
+    if (pos[0] - radius < 0) {
+        return true;
+    } else if (pos[0] + radius >= canvas.width) {
+        return true;
+    }
+
+    if (pos[1] - radius < 0) {
+        return true;
+    } else if (pos[1] + radius > canvas.height) {
+        return true;
+    }
+
+    return false;
 }
