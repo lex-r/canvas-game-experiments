@@ -7,17 +7,20 @@ MousePosition = {x: 0, y: 0};
 function Player(pos, radius, speed) {
     this.pos = pos;
     this.radius = radius || 20;
-    this.origin = this.radius;
     this.speed = speed || 10;
     this.rotation = 0;
 }
 
 Player.prototype.draw = function (context) {
     context.save();
-    context.translate(this.pos[0], this.pos[1]);
+    context.translate(this.pos[0] + this.radius, this.pos[1] + this.radius);
     context.rotate(this.rotation);
-    context.drawImage(resources.get('img/smile.png'), 0, 0,
-        this.radius * 2, this.radius * 2, -this.origin, -this.origin, 40, 40);
+    context.drawImage(
+        resources.get('img/smile.png'), 0, 0,
+        this.radius * 2, this.radius * 2,
+        -this.radius, -this.radius,
+        this.radius * 2, this.radius * 2
+    );
     context.restore();
 };
 
@@ -145,16 +148,16 @@ function handleInput() {
 }
 
 function checkCollision() {
-    if (player.pos[0] - player.radius < 0) {
-        player.pos[0] = player.radius;
-    } else if (player.pos[0] + player.radius >= canvas.width) {
-        player.pos[0] = canvas.width - player.radius;
+    if (player.pos[0] < 0) {
+        player.pos[0] = 0;
+    } else if (player.pos[0] + player.radius * 2 >= canvas.width) {
+        player.pos[0] = canvas.width - player.radius * 2;
     }
 
-    if (player.pos[1] - player.radius < 0) {
-        player.pos[1] = player.radius;
-    } else if (player.pos[1] + player.radius > canvas.height) {
-        player.pos[1] = canvas.height - player.radius;
+    if (player.pos[1] < 0) {
+        player.pos[1] = 0;
+    } else if (player.pos[1] + player.radius * 2 >= canvas.height) {
+        player.pos[1] = canvas.height - player.radius * 2;
     }
 
     for (var i = 0; i < bullets.length; i++) {
