@@ -99,6 +99,7 @@ var timeBetweenEnemyAdded = 1000;
 var bullets = [];
 var enemies = [];
 var gameScore = 0;
+var isGameOver = false;
 
 resources.load('img/smile.png');
 resources.onReady(start);
@@ -112,6 +113,10 @@ function start() {
     document.body.appendChild(canvas);
 
     player = new Player([canvas.width / 2 - 10, canvas.height / 2 - 10]);
+
+    document.getElementById('play-again').addEventListener('click', function() {
+        resetGame();
+    });
 
     setScore(0);
     mainLoop();
@@ -135,6 +140,11 @@ function mainLoop() {
 }
 
 function update() {
+
+    if (isGameOver) {
+        return false;
+    }
+
     handleInput();
     checkCollision();
 
@@ -272,6 +282,33 @@ function checkCollision() {
         }
     }
 
+    for (var i = 0; i < enemies.length; i++) {
+        var enemy = enemies[i];
+        if (checkRoundCollides(enemy.pos, enemy.radius, player.pos, player.radius)) {
+            gameOver();
+        }
+    }
+
+}
+
+function gameOver() {
+    document.getElementById('game-over').style.display = 'block';
+    document.getElementById('game-over-overlay').style.display = 'block';
+    isGameOver = true;
+}
+
+function resetGame() {
+    document.getElementById('game-over').style.display = 'none';
+    document.getElementById('game-over-overlay').style.display = 'none';
+    isGameOver = false;
+
+    bullets = [];
+    enemies = [];
+
+    setScore(0);
+    timeBetweenEnemyAdded = 1000;
+
+    player.pos = [canvas.width / 2 + player.radius, canvas.height / 2 + player.radius];
 }
 
 function checkRoundCollides(pos1, radius1, pos2, radius2) {
