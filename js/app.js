@@ -24,6 +24,13 @@ Player.prototype.draw = function (context) {
     context.restore();
 };
 
+Player.prototype.update = function () {
+    var opposite = MousePosition.y - this.pos[1];
+    var adjacent = MousePosition.x - this.pos[0];
+    this.rotation = Math.atan2(opposite, adjacent);
+    this.rotation += Math.atan2(1, 0);
+};
+
 function Enemy(pos, radius, speed) {
     this.pos = pos;
     this.radius = radius || 20;
@@ -123,10 +130,8 @@ function mainLoop() {
 function update() {
     handleInput();
     checkCollision();
-    var opposite = MousePosition.y - player.pos[1];
-    var adjacent = MousePosition.x - player.pos[0];
-    player.rotation = Math.atan2(opposite, adjacent);
-    player.rotation += Math.atan2(1, 0);
+
+    player.update();
 
     for (var i = 0; i < enemies.length; i++) {
         enemies[i].update();
