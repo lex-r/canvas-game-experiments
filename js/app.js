@@ -119,6 +119,7 @@ function start() {
     context = canvas.getContext("2d");
     canvas.width = 800;
     canvas.height = 600;
+    document.onselectstart = function() { return false; };
 
     terrainPattern = context.createPattern(resources.get('img/terrain.png'), 'repeat');
 
@@ -210,7 +211,7 @@ function handleInput() {
         player.pos[0] += player.speed;
     }
 
-    if (input.isDown('SPACE') && Date.now() - lastFire > 100) {
+    if ((input.isMouseDown() || input.isDown('SPACE')) && Date.now() - lastFire > 100) {
         lastFire = Date.now();
         var x = player.pos[0] + player.radius;
         var y = player.pos[1] + player.radius;

@@ -1,6 +1,7 @@
 
 (function() {
     var pressedKeys = {};
+    var pressedMouse = false;
 
     function setKey(event, status) {
         var code = event.keyCode;
@@ -37,9 +38,21 @@
         pressedKeys = {};
     });
 
+    window.addEventListener('mousedown', function(e) {
+        pressedMouse = true;
+    });
+
+    window.addEventListener('mouseup', function (e) {
+        pressedMouse = false;
+    });
+
     window.input = {
         isDown: function(key) {
             return pressedKeys[key.toUpperCase()];
+        },
+
+        isMouseDown: function() {
+            return pressedMouse;
         }
     };
 })();
