@@ -69,6 +69,10 @@ Enemy.prototype.update = function () {
     this.pos[1] -= velocity[1];
 };
 
+Enemy.prototype.die = function () {
+
+};
+
 function Bullet(pos, radius, vector, velocity) {
     this.pos = pos;
     this.radius = radius;
@@ -103,6 +107,8 @@ var gameScore = 0;
 var isGameOver = false;
 
 Sound.load('sound/cg1.wav', 'gun');
+Sound.load('sound/zombie1.wav', 'zombie1');
+Sound.load('sound/zombie2.wav', 'zombie2');
 
 resources.load('img/smile.png');
 resources.load('img/terrain.png');
@@ -287,6 +293,11 @@ function checkCollision() {
                 bullets.splice(j, 1);
                 i++;
                 setScore(gameScore + 1);
+                if (Math.random() < 0.5) {
+                    Sound.play('zombie1');
+                } else {
+                    Sound.play('zombie2');
+                }
                 break;
             }
         }
