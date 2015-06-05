@@ -138,7 +138,7 @@ function handleInput() {
     if (input.isDown('SPACE') && Date.now() - lastFire > 100) {
         lastFire = Date.now();
         var x = player.pos[0] + player.radius;
-        var y = player.pos[1];
+        var y = player.pos[1] + player.radius;
         var vector = [MousePosition.x - x , MousePosition.y - y];
         var distance = Math.sqrt(vector[0] * vector[0] + vector[1] * vector[1]);
         var normalizedVector = [vector[0] / distance, vector[1] / distance];
