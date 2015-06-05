@@ -117,8 +117,8 @@ resources.onReady(start);
 function start() {
     canvas = document.createElement("canvas");
     context = canvas.getContext("2d");
-    canvas.width = 600;
-    canvas.height = 400;
+    canvas.width = 800;
+    canvas.height = 600;
 
     terrainPattern = context.createPattern(resources.get('img/terrain.png'), 'repeat');
 
