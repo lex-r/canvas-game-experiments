@@ -8,7 +8,7 @@ MousePosition = {x: 0, y: 0};
 function Player(pos, radius, speed) {
     this.pos = pos;
     this.radius = radius || 20;
-    this.speed = speed || 10;
+    this.speed = speed || 4;
     this.rotation = 0;
 }
 
