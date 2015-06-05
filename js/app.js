@@ -24,6 +24,33 @@ Player.prototype.draw = function (context) {
     context.restore();
 };
 
+function Enemy(pos, radius, speed) {
+    this.pos = pos;
+    this.radius = radius || 20;
+    this.speed = speed || 10;
+    this.rotation = 0;
+}
+
+Enemy.prototype.draw = function (context) {
+    context.save();
+    context.translate(this.pos[0] + this.radius, this.pos[1] + this.radius);
+    context.rotate(this.rotation);
+    context.drawImage(
+        resources.get('img/smile.png'), 0, 0,
+        this.radius * 2, this.radius * 2,
+        -this.radius, -this.radius,
+        this.radius * 2, this.radius * 2
+    );
+    context.restore();
+};
+
+Enemy.prototype.update = function () {
+    var opposite = player.pos[1] + player.radius - this.pos[1];
+    var adjacent = player.pos[0] + player.radius - this.pos[0];
+    this.rotation = Math.atan2(opposite, adjacent);
+    this.rotation += Math.atan2(1, 0);
+};
+
 function Bullet(pos, radius, vector, velocity) {
     this.pos = pos;
     this.radius = radius;
@@ -66,12 +93,12 @@ function start() {
 
     player = new Player([0,0]);
 
-    enemies.push(new Player([200,200]));
-    enemies.push(new Player([240,240]));
-    enemies.push(new Player([300,240]));
-    enemies.push(new Player([400,140]));
-    enemies.push(new Player([120,140]));
-    enemies.push(new Player([100,50]));
+    enemies.push(new Enemy([200,200]));
+    enemies.push(new Enemy([240,240]));
+    enemies.push(new Enemy([300,240]));
+    enemies.push(new Enemy([400,140]));
+    enemies.push(new Enemy([120,140]));
+    enemies.push(new Enemy([100,50]));
 
     mainLoop();
 }
@@ -100,6 +127,10 @@ function update() {
     var adjacent = MousePosition.x - player.pos[0];
     player.rotation = Math.atan2(opposite, adjacent);
     player.rotation += Math.atan2(1, 0);
+
+    for (var i = 0; i < enemies.length; i++) {
+        enemies[i].update();
+    }
 
     for (var i = 0; i < bullets.length; i++) {
         var bullet = bullets[i];
