@@ -98,13 +98,14 @@ var lastEnemyAdded = Date.now();
 var timeBetweenEnemyAdded = 1000;
 var bullets = [];
 var enemies = [];
+var gameScore = 0;
 
 resources.load('img/smile.png');
 resources.onReady(start);
 
 function start() {
     canvas = document.createElement("canvas");
-    context = canvas.getContext("2d")
+    context = canvas.getContext("2d");
     canvas.width = 600;
     canvas.height = 400;
 
@@ -112,6 +113,7 @@ function start() {
 
     player = new Player([canvas.width / 2 - 10, canvas.height / 2 - 10]);
 
+    setScore(0);
     mainLoop();
 }
 
@@ -159,6 +161,11 @@ function draw() {
     for (var i = 0; i < enemies.length; i++) {
         enemies[i].draw(context);
     }
+}
+
+function setScore(score) {
+    gameScore = score;
+    document.getElementById('score').innerHTML = score;
 }
 
 function handleInput() {
@@ -259,6 +266,7 @@ function checkCollision() {
                 enemies.splice(i, 1);
                 bullets.splice(j, 1);
                 i++;
+                setScore(gameScore + 1);
                 break;
             }
         }
