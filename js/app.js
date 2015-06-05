@@ -223,7 +223,9 @@ function checkCollision() {
 }
 
 function checkRoundCollides(pos1, radius1, pos2, radius2) {
-    var dist = [Math.abs(pos1[0] - pos2[0]), Math.abs(pos1[1] - pos2[1])];
+    var center1 = [pos1[0] + radius1, pos1[1] + radius1];
+    var center2 = [pos2[0] + radius2, pos2[1] + radius2];
+    var dist = [Math.abs(center1[0] - center2[0]), Math.abs(center1[1] - center2[1])];
     var length = Math.sqrt(dist[0] * dist[0] + dist[1] * dist[1]);
 
     if (length < radius1 + radius2) {
@@ -234,15 +236,15 @@ function checkRoundCollides(pos1, radius1, pos2, radius2) {
 }
 
 function checkWorldOut(pos, radius) {
-    if (pos[0] - radius < 0) {
+    if (pos[0] < 0) {
         return true;
-    } else if (pos[0] + radius >= canvas.width) {
+    } else if (pos[0] + radius * 2 > canvas.width) {
         return true;
     }
 
-    if (pos[1] - radius < 0) {
+    if (pos[1] < 0) {
         return true;
-    } else if (pos[1] + radius > canvas.height) {
+    } else if (pos[1] + radius * 2 > canvas.height) {
         return true;
     }
 
