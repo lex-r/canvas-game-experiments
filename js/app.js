@@ -56,6 +56,16 @@ Enemy.prototype.update = function () {
     var adjacent = player.pos[0] + player.radius - this.pos[0];
     this.rotation = Math.atan2(opposite, adjacent);
     this.rotation += Math.atan2(1, 0);
+
+    // расчет направления движения в сторону игрока
+    var x = player.pos[0] + player.radius;
+    var y = player.pos[1] + player.radius;
+    var vector = [this.pos[0] - x , this.pos[1] - y];
+    var distance = Math.sqrt(vector[0] * vector[0] + vector[1] * vector[1]);
+    var velocity = [vector[0] / distance, vector[1] / distance];
+
+    this.pos[0] -= velocity[0];
+    this.pos[1] -= velocity[1];
 };
 
 function Bullet(pos, radius, vector, velocity) {
@@ -84,6 +94,8 @@ Bullet.prototype.update = function () {
 
 var player = undefined;
 var lastFire = Date.now();
+var lastEnemyAdded = Date.now();
+var timeBetweenEnemyAdded = 1000;
 var bullets = [];
 var enemies = [];
 
@@ -98,14 +110,7 @@ function start() {
 
     document.body.appendChild(canvas);
 
-    player = new Player([0,0]);
-
-    enemies.push(new Enemy([200,200]));
-    enemies.push(new Enemy([240,240]));
-    enemies.push(new Enemy([300,240]));
-    enemies.push(new Enemy([400,140]));
-    enemies.push(new Enemy([120,140]));
-    enemies.push(new Enemy([100,50]));
+    player = new Player([canvas.width / 2 - 10, canvas.height / 2 - 10]);
 
     mainLoop();
 }
@@ -132,6 +137,8 @@ function update() {
     checkCollision();
 
     player.update();
+
+    addRandomEnemy();
 
     for (var i = 0; i < enemies.length; i++) {
         enemies[i].update();
@@ -180,6 +187,43 @@ function handleInput() {
         var normalizedVector = [vector[0] / distance, vector[1] / distance];
         var bullet = new Bullet([x, y], 5, normalizedVector, 15);
         bullets.push(bullet);
+    }
+}
+
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function addRandomEnemy() {
+    if (Date.now() - lastEnemyAdded < timeBetweenEnemyAdded) {
+        return false;
+    }
+
+    // выбор стороны, где появится враг
+    var rand = Math.random();
+
+    var x, y;
+
+    if (rand < 0.25) { // left
+        x = -20;
+        y = getRandomInt(0, canvas.height);
+    } else if (rand < 0.5) { // right
+        x = canvas.width + 20;
+        y = getRandomInt(0, canvas.height);
+    } else if (rand < 0.75) { // top
+        x = getRandomInt(0, canvas.width);
+        y = -20;
+    } else { // bottom
+        x = getRandomInt(0, canvas.width);
+        y = canvas.height + 20;
+    }
+
+    enemies.push(new Enemy([x, y], 20, 2));
+
+    lastEnemyAdded = Date.now();
+
+    if (timeBetweenEnemyAdded > 500) {
+        timeBetweenEnemyAdded *= 0.95;
     }
 }
 
