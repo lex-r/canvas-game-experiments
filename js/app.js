@@ -255,7 +255,7 @@ function addRandomEnemy() {
 
     lastEnemyAdded = Date.now();
 
-    if (timeBetweenEnemyAdded > 300) {
+    if (timeBetweenEnemyAdded > 100) {
         timeBetweenEnemyAdded *= 0.97;
     }
 }
