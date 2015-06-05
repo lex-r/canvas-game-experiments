@@ -29,8 +29,8 @@ canvas {
 
 #game-over, #game-over-overlay {
     margin: auto;
-    width: 600px;
-    height: 400px;
+    width: 800px;
+    height: 600px;
     position: absolute;
     top: 0;
     left: 0;
