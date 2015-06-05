@@ -1,6 +1,7 @@
 
 var canvas;
 var context;
+var terrainPattern;
 
 MousePosition = {x: 0, y: 0};
 
@@ -102,6 +103,7 @@ var gameScore = 0;
 var isGameOver = false;
 
 resources.load('img/smile.png');
+resources.load('img/terrain.png');
 resources.onReady(start);
 
 function start() {
@@ -109,6 +111,8 @@ function start() {
     context = canvas.getContext("2d");
     canvas.width = 600;
     canvas.height = 400;
+
+    terrainPattern = context.createPattern(resources.get('img/terrain.png'), 'repeat');
 
     document.body.appendChild(canvas);
 
@@ -163,6 +167,9 @@ function update() {
 }
 
 function draw() {
+    context.fillStyle = terrainPattern;
+    context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
     player.draw(context);
     for (var i = 0; i< bullets.length; i++) {
         bullets[i].draw(context);
