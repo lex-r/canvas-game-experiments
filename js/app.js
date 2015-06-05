@@ -97,12 +97,49 @@ Bullet.prototype.update = function () {
     this.pos[1] += this.velocity[1];
 };
 
+function Bonus(pos) {
+    this.pos = pos;
+    this.radius = 10;
+    this.addedAt = Date.now();
+}
+
+Bonus.prototype.draw = function (context) {
+    var x = this.pos[0] + this.radius,
+        y = this.pos[1] + this.radius;
+
+    context.beginPath();
+    context.arc(x, y, this.radius, 0, Math.PI*2, true);
+    context.fillStyle = "red";
+    context.fill();
+    context.closePath();
+    context.fill();
+};
+
+Bonus.prototype.isOld = function () {
+    if (Date.now() - this.addedAt > 10000) {
+        return true;
+    }
+
+    return false;
+};
+
+Bonus.prototype.applyTo = function (player) {
+    var lastTimeBetweenFire = timeBetweenFire;
+    timeBetweenFire = 20;
+
+    setTimeout(function() {
+        timeBetweenFire = lastTimeBetweenFire;
+    }, 10000);
+};
+
 var player = undefined;
 var lastFire = Date.now();
 var lastEnemyAdded = Date.now();
 var timeBetweenEnemyAdded = 1000;
+var timeBetweenFire = 100;
 var bullets = [];
 var enemies = [];
+var bonuses = [];
 var gameScore = 0;
 var isGameOver = false;
 
@@ -163,7 +200,14 @@ function update() {
 
     player.update();
 
+    for (var i = 0; i < bonuses.length; i++) {
+        if (bonuses[i].isOld()) {
+            bonuses.splice(i, 1);
+        }
+    }
+
     addRandomEnemy();
+    addRandomBonus();
 
     for (var i = 0; i < enemies.length; i++) {
         enemies[i].update();
@@ -186,6 +230,10 @@ function draw() {
 
     for (var i = 0; i < enemies.length; i++) {
         enemies[i].draw(context);
+    }
+
+    for (var i = 0; i < bonuses.length; i++) {
+        bonuses[i].draw(context);
     }
 }
 
@@ -211,7 +259,7 @@ function handleInput() {
         player.pos[0] += player.speed;
     }
 
-    if ((input.isMouseDown() || input.isDown('SPACE')) && Date.now() - lastFire > 100) {
+    if ((input.isMouseDown() || input.isDown('SPACE')) && Date.now() - lastFire > timeBetweenFire) {
         lastFire = Date.now();
         var x = player.pos[0] + player.radius;
         var y = player.pos[1] + player.radius;
@@ -226,6 +274,14 @@ function handleInput() {
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function addRandomBonus() {
+    if (Math.random() < 0.002) {
+        var x = getRandomInt(0, canvas.width);
+        var y = getRandomInt(0, canvas.height);
+        bonuses.push(new Bonus([x, y]));
+    }
 }
 
 function addRandomEnemy() {
@@ -301,6 +357,15 @@ function checkCollision() {
                 }
                 break;
             }
+        }
+    }
+
+    for (var i = 0; i < bonuses.length; i++) {
+        var bonus = bonuses[i];
+        if (checkRoundCollides(player.pos, player.radius, bonus.pos, bonus.radius)) {
+            bonus.applyTo(player);
+            bonuses.splice(i, 1);
+            i++;
         }
     }
 
