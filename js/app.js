@@ -102,6 +102,8 @@ var enemies = [];
 var gameScore = 0;
 var isGameOver = false;
 
+Sound.load('sound/cg1.wav', 'gun');
+
 resources.load('img/smile.png');
 resources.load('img/terrain.png');
 resources.onReady(start);
@@ -211,6 +213,7 @@ function handleInput() {
         var normalizedVector = [vector[0] / distance, vector[1] / distance];
         var bullet = new Bullet([x, y], 5, normalizedVector, 15);
         bullets.push(bullet);
+        Sound.play('gun');
     }
 }
 
