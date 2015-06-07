@@ -10,6 +10,7 @@ function Player(pos, radius, speed) {
     this.radius = radius || 20;
     this.speed = speed || 4;
     this.rotation = 0;
+    this.bonuses = [];
 }
 
 Player.prototype.draw = function (context) {
@@ -109,13 +110,13 @@ Bonus.prototype.draw = function (context) {
 
     context.beginPath();
     context.arc(x, y, this.radius, 0, Math.PI*2, true);
-    context.fillStyle = "red";
+    context.fillStyle = "#33bb66";
     context.fill();
     context.closePath();
     context.fill();
 };
 
-Bonus.prototype.isOld = function () {
+Bonus.prototype.isOutdated = function () {
     if (Date.now() - this.addedAt > 10000) {
         return true;
     }
@@ -124,11 +125,14 @@ Bonus.prototype.isOld = function () {
 };
 
 Bonus.prototype.applyTo = function (player) {
-    var lastTimeBetweenFire = timeBetweenFire;
-    timeBetweenFire = 20;
+    timeBetweenFire = 40;
 
-    setTimeout(function() {
-        timeBetweenFire = lastTimeBetweenFire;
+    if (bonusTimer != undefined) {
+        clearTimeout(bonusTimer);
+    }
+
+    bonusTimer = setTimeout(function() {
+        timeBetweenFire = 100;
     }, 10000);
 };
 
@@ -142,6 +146,7 @@ var enemies = [];
 var bonuses = [];
 var gameScore = 0;
 var isGameOver = false;
+var bonusTimer = undefined;
 
 Sound.load('sound/cg1.wav', 'gun');
 Sound.load('sound/zombie1.wav', 'zombie1');
@@ -201,7 +206,7 @@ function update() {
     player.update();
 
     for (var i = 0; i < bonuses.length; i++) {
-        if (bonuses[i].isOld()) {
+        if (bonuses[i].isOutdated()) {
             bonuses.splice(i, 1);
         }
     }
@@ -391,6 +396,7 @@ function resetGame() {
 
     bullets = [];
     enemies = [];
+    bonuses = [];
 
     setScore(0);
     timeBetweenEnemyAdded = 1000;
