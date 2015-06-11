@@ -8,7 +8,7 @@ resources.load('img/smile.png');
 resources.load('img/terrain.png');
 console.log(Game);
 resources.onReady(function() {
-    Game.start();
+    Game.start('gameCanvas', 800, 600);
 });
 
 document.addEventListener('mousemove', function (event) {

@@ -15,12 +15,12 @@ function GameClass() {
     this.bonusTimer = undefined;
 }
 
-GameClass.prototype.start = function() {
+GameClass.prototype.start = function(canvasName, x, y) {
     var self = this;
-    this.canvas = document.createElement("canvas");
+    this.canvas = document.getElementById(canvasName);
     this.context = this.canvas.getContext("2d");
-    this.canvas.width = 800;
-    this.canvas.height = 600;
+    this.canvas.width = x;
+    this.canvas.height = y;
     document.onselectstart = function() { return false; };
 
     this.terrainPattern = this.context.createPattern(resources.get('img/terrain.png'), 'repeat');
