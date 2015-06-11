@@ -393,6 +393,8 @@ function resetGame() {
     document.getElementById('game-over').style.display = 'none';
     document.getElementById('game-over-overlay').style.display = 'none';
     isGameOver = false;
+    clearTimeout(bonusTimer);
+    timeBetweenFire = 100;
 
     bullets = [];
     enemies = [];
