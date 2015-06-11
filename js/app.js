@@ -1,4 +1,3 @@
-
 var canvas;
 var context;
 var terrainPattern;
@@ -68,10 +67,6 @@ Enemy.prototype.update = function () {
 
     this.pos[0] -= velocity[0];
     this.pos[1] -= velocity[1];
-};
-
-Enemy.prototype.die = function () {
-
 };
 
 function Bullet(pos, radius, vector, velocity) {
@@ -184,10 +179,6 @@ document.addEventListener('mousemove', function (event) {
 });
 
 function mainLoop() {
-    context.fillStyle = "blue";
-    context.fillRect(0, 0, canvas.width, canvas.height);
-
-
     update();
     draw();
 
