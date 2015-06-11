@@ -25,13 +25,13 @@ Bonus.prototype.isOutdated = function () {
 };
 
 Bonus.prototype.applyTo = function (player) {
-    timeBetweenFire = 40;
+    Game.timeBetweenFire = 40;
 
-    if (bonusTimer != undefined) {
-        clearTimeout(bonusTimer);
+    if (Game.bonusTimer != undefined) {
+        clearTimeout(Game.bonusTimer);
     }
 
-    bonusTimer = setTimeout(function() {
-        timeBetweenFire = 100;
+    Game.bonusTimer = setTimeout(function() {
+        Game.timeBetweenFire = 100;
     }, 10000);
 };
