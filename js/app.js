@@ -6,7 +6,7 @@ Sound.load('sound/zombie2.wav', 'zombie2');
 
 resources.load('img/smile.png');
 resources.load('img/terrain.png');
-console.log(Game);
+
 resources.onReady(function() {
     Game.start('gameCanvas', 800, 600);
 });
