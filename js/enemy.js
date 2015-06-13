@@ -3,6 +3,7 @@ function Enemy(pos, radius, speed) {
     this.radius = radius || 20;
     this.speed = speed || 10;
     this.rotation = 0;
+    this.health = 1;
 }
 
 Enemy.prototype.draw = function (context) {
@@ -33,4 +34,12 @@ Enemy.prototype.update = function () {
 
     this.pos[0] -= velocity[0];
     this.pos[1] -= velocity[1];
+};
+
+Enemy.prototype.bump = function(damage) {
+    this.health -= damage;
+};
+
+Enemy.prototype.isDead = function() {
+    return this.health <= 0;
 };

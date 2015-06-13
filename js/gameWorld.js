@@ -75,23 +75,34 @@ GameWorld.prototype.checkCollision = function() {
     }
 
     for (var i = 0; i < this.enemies.length; i++) {
+        var enemy = this.enemies[i];
         var pos = this.enemies[i].pos;
         var radius = this.enemies[i].radius;
 
         for (var j = 0; j < this.bullets.length; j++) {
+            var bullet = this.bullets[j];
             var bpos = this.bullets[j].pos;
             var bradius = this.bullets[j].radius;
 
             if (this.checkRoundCollides(pos, radius, bpos, bradius)) {
-                this.enemies.splice(i, 1);
-                this.bullets.splice(j, 1);
-                i++;
-                this.addScore(1);
-                if (Math.random() < 0.5) {
-                    Sound.play('zombie1');
-                } else {
-                    Sound.play('zombie2');
+                var enemyHealthBefore = enemy.health;
+                enemy.bump(bullet.damage);
+                var score = enemyHealthBefore - enemy.health;
+                if (enemy.isDead()) {
+                    this.enemies.splice(i, 1);
+                    i++;
+                    if (Math.random() < 0.5) {
+                        Sound.play('zombie1');
+                    } else {
+                        Sound.play('zombie2');
+                    }
                 }
+                bullet.damage -= enemyHealthBefore;
+                if (bullet.damage <= 0) {
+                    this.bullets.splice(j, 1);
+                }
+
+                this.addScore(score);
                 break;
             }
         }
