@@ -69,10 +69,6 @@ BonusManager.prototype.getRandomBonus = function() {
     return new Bonus([x, y]);
 };
 
-BonusManager.prototype.applyBonusToPlayer = function(player, bonus) {
-    bonus.applyTo(player);
-};
-
 BonusManager.prototype.reset = function() {
     if (this.bonuses.length == 0) {
         return true;
