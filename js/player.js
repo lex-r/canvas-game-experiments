@@ -4,6 +4,7 @@ function Player(pos, radius, speed) {
     this.speed = speed || 4;
     this.rotation = 0;
     this.bonuses = [];
+    this.weapon = undefined;
 }
 
 Player.prototype.draw = function (context) {

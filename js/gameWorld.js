@@ -2,16 +2,15 @@ function GameWorld(context) {
     this.context = context;
     this.terrainPattern = this.context.createPattern(resources.get('img/terrain.png'), 'repeat');
     this.player = new Player([Game.size.x / 2 - 10, Game.size.y / 2 - 10]);
+    this.player.weapon = new Weapon(this.player, 100);
     this.bullets = [];
     this.enemies = [];
     this.bonuses = [];
     this.gameScore = 0;
     this.isGameOver = false;
-    this.lastFire = Date.now();
     this.lastEnemyAdded = Date.now();
     this.timeBetweenEnemyAdded = 1000;
-    this.timeBetweenFire = 100;
-    this.bonusTimer = undefined;
+    this.bonusManager = new BonusManager();
 }
 
 GameWorld.prototype.update = function() {
@@ -19,11 +18,7 @@ GameWorld.prototype.update = function() {
         this.handleInput();
         this.player.update();
 
-        for (var i = 0; i < this.bonuses.length; i++) {
-            if (this.bonuses[i].isOutdated()) {
-                this.bonuses.splice(i, 1);
-            }
-        }
+        this.bonusManager.update(this);
 
         for (var i = 0; i < this.enemies.length; i++) {
             this.enemies[i].update();
@@ -105,7 +100,7 @@ GameWorld.prototype.checkCollision = function() {
     for (var i = 0; i < this.bonuses.length; i++) {
         var bonus = this.bonuses[i];
         if (this.checkRoundCollides(this.player.pos, this.player.radius, bonus.pos, bonus.radius)) {
-            bonus.applyTo(this.player);
+            this.bonusManager.add(bonus);
             this.bonuses.splice(i, 1);
             i++;
         }
@@ -136,16 +131,8 @@ GameWorld.prototype.handleInput = function() {
         this.player.pos[0] += this.player.speed;
     }
 
-    if ((input.isMouseDown() || input.isDown('SPACE')) && Date.now() - this.lastFire > this.timeBetweenFire) {
-        this.lastFire = Date.now();
-        var x = this.player.pos[0] + this.player.radius;
-        var y = this.player.pos[1] + this.player.radius;
-        var vector = [MousePosition.x - x , MousePosition.y - y];
-        var distance = Math.sqrt(vector[0] * vector[0] + vector[1] * vector[1]);
-        var normalizedVector = [vector[0] / distance, vector[1] / distance];
-        var bullet = new Bullet([x, y], 5, normalizedVector, 15);
-        this.bullets.push(bullet);
-        Sound.play('gun');
+    if ((input.isMouseDown() || input.isDown('SPACE')) && this.player.weapon.isReadyToFire()) {
+        this.player.weapon.fire();
     }
 };
 
@@ -183,10 +170,8 @@ GameWorld.prototype.addRandomEnemy = function() {
 };
 
 GameWorld.prototype.addRandomBonus = function() {
-    if (Math.random() < 0.002) {
-        var x = getRandomInt(0, Game.size.x);
-        var y = getRandomInt(0, Game.size.y);
-        this.bonuses.push(new Bonus([x, y]));
+    if (this.bonusManager.isTimeToBonus()) {
+        this.bonuses.push(this.bonusManager.getRandomBonus());
     }
 };
 
@@ -229,17 +214,14 @@ GameWorld.prototype.reset = function() {
     this.enemies = [];
     this.bonuses = [];
 
-    this.lastFire = Date.now();
+    this.bonusManager.reset();
     this.lastEnemyAdded = Date.now();
     this.timeBetweenEnemyAdded = 1000;
-    this.timeBetweenFire = 100;
     this.gameScore = 0;
     this.isGameOver = false;
 
     document.getElementById('game-over').style.display = 'none';
     document.getElementById('game-over-overlay').style.display = 'none';
-
-    clearTimeout(this.bonusTimer);
 };
 
 GameWorld.prototype.gameOver = function() {
