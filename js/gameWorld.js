@@ -15,7 +15,6 @@ function GameWorld(context) {
 
 GameWorld.prototype.update = function() {
     if (!this.isGameOver) {
-        this.handleInput();
         this.player.update();
 
         this.bonusManager.update(this);
@@ -122,28 +121,6 @@ GameWorld.prototype.checkCollision = function() {
         if (this.checkRoundCollides(enemy.pos, enemy.radius, this.player.pos, this.player.radius)) {
             this.gameOver();
         }
-    }
-};
-
-GameWorld.prototype.handleInput = function() {
-    if (input.isDown('DOWN') || input.isDown('s')) {
-        this.player.pos[1] += this.player.speed;
-    }
-
-    if (input.isDown('UP') || input.isDown('w')) {
-        this.player.pos[1] -= this.player.speed;
-    }
-
-    if (input.isDown('LEFT') || input.isDown('a')) {
-        this.player.pos[0] -= this.player.speed;
-    }
-
-    if (input.isDown('RIGHT') || input.isDown('d')) {
-        this.player.pos[0] += this.player.speed;
-    }
-
-    if ((input.isMouseDown() || input.isDown('SPACE')) && this.player.weapon.isReadyToFire()) {
-        this.player.weapon.fire();
     }
 };
 
