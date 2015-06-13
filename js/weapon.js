@@ -2,6 +2,7 @@ function Weapon(player, timeBetweenFire) {
     this.player = player;
     this.lastFire = Date.now();
     this.timeBetweenFire = timeBetweenFire || 100;
+    this.damage = 1;
 }
 
 Weapon.prototype.isReadyToFire = function() {
@@ -16,7 +17,7 @@ Weapon.prototype.fire = function() {
     var vector = [MousePosition.x - x , MousePosition.y - y];
     var distance = Math.sqrt(vector[0] * vector[0] + vector[1] * vector[1]);
     var normalizedVector = [vector[0] / distance, vector[1] / distance];
-    var bullet = new Bullet([x, y], 5, normalizedVector, 15);
+    var bullet = new Bullet([x, y], 5, this.damage, normalizedVector, 15);
     Game.world.bullets.push(bullet);
     Sound.play('gun');
 };

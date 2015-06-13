@@ -1,6 +1,7 @@
-function Bullet(pos, radius, vector, velocity) {
+function Bullet(pos, radius, damage, vector, velocity) {
     this.pos = pos;
     this.radius = radius;
+    this.damage = damage;
     this.vector = vector;
     this.velocity = [this.vector[0] * velocity, this.vector[1] * velocity];
 }
