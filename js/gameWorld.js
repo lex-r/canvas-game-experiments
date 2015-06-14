@@ -1,7 +1,8 @@
 function GameWorld(context) {
     this.context = context;
     this.terrainPattern = this.context.createPattern(resources.get('img/terrain.png'), 'repeat');
-    this.player = new Player([Game.size.x / 2 - 10, Game.size.y / 2 - 10]);
+    var playerPos = new Vector2(Game.size.x / 2 - 20, Game.size.y / 2 - 20);
+    this.player = new Player(playerPos, 20);
     this.player.weapon = new Weapon(this.player, 100);
     this.bullets = [];
     this.enemies = [];
@@ -54,16 +55,16 @@ GameWorld.prototype.draw = function() {
 };
 
 GameWorld.prototype.checkCollision = function() {
-    if (this.player.pos[0] < 0) {
-        this.player.pos[0] = 0;
-    } else if (this.player.pos[0] + this.player.radius * 2 >= Game.size.x) {
-        this.player.pos[0] = Game.size.x - this.player.radius * 2;
+    if (this.player.pos.x < 0) {
+        this.player.pos.x = 0;
+    } else if (this.player.pos.x + this.player.radius * 2 >= Game.size.x) {
+        this.player.pos.x = Game.size.x - this.player.radius * 2;
     }
 
-    if (this.player.pos[1] < 0) {
-        this.player.pos[1] = 0;
-    } else if (this.player.pos[1] + this.player.radius * 2 >= Game.size.y) {
-        this.player.pos[1] = Game.size.y - this.player.radius * 2;
+    if (this.player.pos.y < 0) {
+        this.player.pos.y = 0;
+    } else if (this.player.pos.y + this.player.radius * 2 >= Game.size.y) {
+        this.player.pos.y = Game.size.y - this.player.radius * 2;
     }
 
     for (var i = 0; i < this.bullets.length; i++) {
@@ -148,7 +149,8 @@ GameWorld.prototype.addRandomEnemy = function() {
         y = Game.size.y + 20;
     }
 
-    this.enemies.push(new Enemy([x, y], 20, 2));
+    var enemyPos = new Vector2(x, y);
+    this.enemies.push(new Enemy(enemyPos, 20, 2));
 
     this.lastEnemyAdded = Date.now();
 
@@ -164,15 +166,15 @@ GameWorld.prototype.addRandomBonus = function() {
 };
 
 GameWorld.prototype.checkWorldOut = function(pos, radius) {
-    if (pos[0] < 0) {
+    if (pos.x < 0) {
         return true;
-    } else if (pos[0] + radius * 2 > Game.size.x) {
+    } else if (pos.x + radius * 2 > Game.size.x) {
         return true;
     }
 
-    if (pos[1] < 0) {
+    if (pos.y < 0) {
         return true;
-    } else if (pos[1] + radius * 2 > Game.size.y) {
+    } else if (pos.y + radius * 2 > Game.size.y) {
         return true;
     }
 
@@ -180,12 +182,12 @@ GameWorld.prototype.checkWorldOut = function(pos, radius) {
 };
 
 GameWorld.prototype.checkRoundCollides = function(pos1, radius1, pos2, radius2) {
-    var center1 = [pos1[0] + radius1, pos1[1] + radius1];
-    var center2 = [pos2[0] + radius2, pos2[1] + radius2];
-    var dist = [Math.abs(center1[0] - center2[0]), Math.abs(center1[1] - center2[1])];
-    var length = Math.sqrt(dist[0] * dist[0] + dist[1] * dist[1]);
+    var center1 = new Vector2(pos1.x + radius1, pos1.y + radius1);
+    var center2 = new Vector2(pos2.x + radius2, pos2.y + radius2);
 
-    if (length < radius1 + radius2) {
+    var dist = center1.distanceTo(center2);
+
+    if (dist < radius1 + radius2) {
         return true;
     }
 
@@ -197,7 +199,8 @@ GameWorld.prototype.addScore = function(score) {
 };
 
 GameWorld.prototype.reset = function() {
-    this.player.pos = [Game.size.x / 2 - 10, Game.size.y / 2 - 10];
+    this.player.pos.x = Game.size.x / 2 - 20;
+    this.player.pos.y = Game.size.y / 2 - 20;
     this.bullets = [];
     this.enemies = [];
     this.bonuses = [];

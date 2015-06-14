@@ -1,4 +1,4 @@
-MousePosition = {x: 0, y: 0};
+MousePosition = new Vector2(0, 0);
 
 Sound.load('sound/cg1.wav', 'gun');
 Sound.load('sound/zombie1.wav', 'zombie1');

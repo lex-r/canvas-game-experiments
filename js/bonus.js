@@ -6,8 +6,8 @@ function Bonus(pos) {
 }
 
 Bonus.prototype.draw = function (context) {
-    var x = this.pos[0] + this.radius,
-        y = this.pos[1] + this.radius;
+    var x = this.pos.x + this.radius,
+        y = this.pos.y + this.radius;
 
     context.beginPath();
     context.arc(x, y, this.radius, 0, Math.PI*2, true);
@@ -66,7 +66,8 @@ BonusManager.prototype.update = function(world) {
 BonusManager.prototype.getRandomBonus = function() {
     var x = getRandomInt(0, Game.size.x);
     var y = getRandomInt(0, Game.size.y);
-    return new Bonus([x, y]);
+    var bonusPos = new Vector2(x, y);
+    return new Bonus(bonusPos);
 };
 
 BonusManager.prototype.reset = function() {
