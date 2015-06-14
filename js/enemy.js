@@ -1,7 +1,8 @@
-function Enemy(pos, radius, speed) {
+function Enemy(pos, radius, direction, velocity) {
     this.pos = pos;
     this.radius = radius || 20;
-    this.speed = speed || 10;
+    this.direction = direction;
+    this.velocity = velocity || 1;
     this.rotation = 0;
     this.health = 1;
 }
@@ -21,16 +22,13 @@ Enemy.prototype.draw = function (context) {
 
 Enemy.prototype.update = function () {
     var playerPosCenter = Game.world.player.posCenter();
-    var direction = playerPosCenter.diff(this.pos);
+    this.direction = this.pos.diff(playerPosCenter);
+    this.direction.normalize();
 
-    this.rotation = Math.atan2(direction.y, direction.x);
+    this.rotation = Math.atan2(-this.direction.y, -this.direction.x);
     this.rotation += Math.atan2(1, 0);
 
-    // расчет направления движения в сторону игрока
-    var distance = this.pos.diff(playerPosCenter);
-    var velocity = distance.normalize();
-
-    this.pos.subtract(velocity);
+    this.pos.subtract(this.direction.multiplicationScalar(this.velocity));
 };
 
 Enemy.prototype.bump = function(damage) {

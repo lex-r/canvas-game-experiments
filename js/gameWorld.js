@@ -150,7 +150,12 @@ GameWorld.prototype.addRandomEnemy = function() {
     }
 
     var enemyPos = new Vector2(x, y);
-    this.enemies.push(new Enemy(enemyPos, 20, 2));
+
+    var playerPosCenter = this.player.posCenter();
+    var directionToPlayer = enemyPos.diff(playerPosCenter);
+    directionToPlayer.normalize();
+
+    this.enemies.push(new Enemy(enemyPos, 20, directionToPlayer, 1));
 
     this.lastEnemyAdded = Date.now();
 
