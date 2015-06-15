@@ -46,3 +46,37 @@ function BonusFrequencyFire(pos) {
         Game.world.player.weapon.timeBetweenFire = 100;
     };
 }
+
+function BonusWeaponDamage(pos) {
+    AbstractBonus.apply(this, arguments);
+    this.color = "#3333cc";
+
+    var oldWeaponDamage = 0;
+
+    this.applyTo = function(player) {
+        oldWeaponDamage = player.weapon.damage;
+        player.weapon.damage *= 3;
+        this.applied = true;
+    };
+
+    this.disable = function() {
+        Game.world.player.weapon.damage = oldWeaponDamage;
+    };
+}
+
+function BonusWeaponCaliber(pos) {
+    AbstractBonus.apply(this, arguments);
+    this.color = "#cccc33";
+
+    var oldCaliber = 0;
+
+    this.applyTo = function(player) {
+        oldCaliber = player.weapon.caliber;
+        player.weapon.caliber = Math.round(player.weapon.caliber * 1.5);
+        this.applied = true;
+    };
+
+    this.disable = function() {
+        Game.world.player.weapon.caliber = oldCaliber;
+    };
+}

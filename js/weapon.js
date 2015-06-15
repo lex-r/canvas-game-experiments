@@ -3,6 +3,7 @@ function Weapon(player, timeBetweenFire) {
     this.lastFire = Date.now();
     this.timeBetweenFire = timeBetweenFire || 100;
     this.damage = 1;
+    this.caliber = 5;
 }
 
 Weapon.prototype.isReadyToFire = function() {
@@ -15,7 +16,7 @@ Weapon.prototype.fire = function() {
     var directionToPlayer = MousePosition.diff(playerPosCenter);
     var bulletDirection = directionToPlayer.normalize();
 
-    var bullet = new Bullet(playerPosCenter, 5, this.damage, bulletDirection, 15);
+    var bullet = new Bullet(playerPosCenter, this.caliber, this.damage, bulletDirection, 15);
     Game.world.bullets.push(bullet);
     Sound.play('gun');
 };
