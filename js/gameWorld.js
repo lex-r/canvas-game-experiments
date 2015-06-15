@@ -7,6 +7,7 @@ function GameWorld(context) {
     this.bullets = [];
     this.enemies = [];
     this.bonuses = [];
+    this.enemySpeedFactor = 1;
     this.gameScore = 0;
     this.isGameOver = false;
     this.lastEnemyAdded = Date.now();

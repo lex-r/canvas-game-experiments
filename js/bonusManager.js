@@ -31,7 +31,8 @@ BonusManager.prototype.getRandomBonus = function() {
     var bonusClasses = [
         BonusFrequencyFire,
         BonusWeaponDamage,
-        BonusWeaponCaliber
+        BonusWeaponCaliber,
+        BonusEnemySpeed
     ];
 
     var classNum = getRandomInt(0, bonusClasses.length - 1);

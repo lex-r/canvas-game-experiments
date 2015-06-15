@@ -80,3 +80,20 @@ function BonusWeaponCaliber(pos) {
         Game.world.player.weapon.caliber = oldCaliber;
     };
 }
+
+function BonusEnemySpeed(pos) {
+    AbstractBonus.apply(this, arguments);
+    this.color = "#33cccc";
+
+    var oldSpeedFactor = 1;
+
+    this.applyTo = function(player) {
+        oldSpeedFactor = Game.world.enemySpeedFactor;
+        Game.world.enemySpeedFactor *= 0.5;
+        this.applied = true;
+    };
+
+    this.disable = function() {
+        Game.world.enemySpeedFactor = oldSpeedFactor;
+    };
+}

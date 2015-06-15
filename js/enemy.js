@@ -28,7 +28,7 @@ Enemy.prototype.update = function () {
     this.rotation = Math.atan2(-this.direction.y, -this.direction.x);
     this.rotation += Math.atan2(1, 0);
 
-    this.pos.subtract(this.direction.multiplicationScalar(this.velocity));
+    this.pos.subtract(this.direction.multiplicationScalar(this.velocity * Game.world.enemySpeedFactor));
 };
 
 Enemy.prototype.bump = function(damage) {
