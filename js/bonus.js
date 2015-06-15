@@ -33,7 +33,7 @@ function AbstractBonus(pos) {
     this.disable = function(){};
 }
 
-function Bonus(pos) {
+function BonusFrequesncyFire(pos) {
     AbstractBonus.apply(this, arguments);
     this.color = "#33bb66";
 
