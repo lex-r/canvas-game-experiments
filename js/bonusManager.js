@@ -29,7 +29,7 @@ BonusManager.prototype.getRandomBonus = function() {
     var bonusPos = new Vector2(x, y);
 
     var bonusClasses = [
-        BonusFrequesncyFire
+        BonusFrequencyFire
     ];
 
     var classNum = getRandomInt(0, bonusClasses.length - 1);
