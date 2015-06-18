@@ -5,14 +5,14 @@ function GameClass() {
     this.world   = undefined;
 }
 
-GameClass.prototype.start = function(canvasName, x, y) {
+GameClass.prototype.start = function(canvasName) {
     var self           = this;
     this.canvas        = document.getElementById(canvasName);
     this.context       = this.canvas.getContext("2d");
-    this.canvas.width  = x;
-    this.canvas.height = y;
-    this.size.x        = x;
-    this.size.y        = y;
+    this.canvas.width  = this.canvas.offsetWidth;
+    this.canvas.height = this.canvas.offsetHeight;
+    this.size.x        = this.canvas.width;
+    this.size.y        = this.canvas.height;
 
     document.onselectstart = function() { return false; };
 
@@ -25,6 +25,13 @@ GameClass.prototype.start = function(canvasName, x, y) {
     });
 
     this.mainLoop();
+};
+
+GameClass.prototype.resize = function() {
+    this.canvas.width  = this.canvas.offsetWidth;
+    this.canvas.height = this.canvas.offsetHeight;
+    this.size.x        = this.canvas.width;
+    this.size.y        = this.canvas.height;
 };
 
 GameClass.prototype.mainLoop = function() {

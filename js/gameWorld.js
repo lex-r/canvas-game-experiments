@@ -39,8 +39,6 @@ GameWorld.prototype.draw = function() {
     this.context.fillStyle = this.terrainPattern;
     this.context.fillRect(0, 0, Game.size.x, Game.size.y);
 
-    document.getElementById('score').innerHTML = this.gameScore;
-
     this.player.draw(this.context);
     for (var i = 0; i< this.bullets.length; i++) {
         this.bullets[i].draw(this.context);
@@ -53,6 +51,11 @@ GameWorld.prototype.draw = function() {
     for (var i = 0; i < this.bonuses.length; i++) {
         this.bonuses[i].draw(this.context);
     }
+
+    this.context.fillStyle = "white";
+    this.context.font = "30px Arial";
+    this.context.textAlign = "center";
+    this.context.fillText(this.gameScore, Game.size.x - 100, 30);
 };
 
 GameWorld.prototype.checkCollision = function() {

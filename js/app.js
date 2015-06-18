@@ -8,7 +8,10 @@ resources.load('img/smile.png');
 resources.load('img/terrain.png');
 
 resources.onReady(function() {
-    Game.start('gameCanvas', 800, 600);
+    window.onresize = function() {
+        Game.resize();
+    };
+    Game.start('gameCanvas');
 });
 
 document.addEventListener('mousemove', function (event) {
